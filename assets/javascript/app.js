@@ -55,28 +55,33 @@ database.ref().on("child_added", function(snapshotChild) {
     console.log(snapshotChild.val().startDate);
     console.log(snapshotChild.val().monthlyRate);
     
+    // Calculamos los meses que lleva trabajando
+    // var monthsWorked = 0;
+    var yrsWorked = moment(snapshotChild.val().startDate, "MM/DD/YYYY").fromNow();
+    
+    yrsWorked = yrsWorked * 12;
+
     // Create the new row
     var newRow = $("<tr>").append(
+      
       $("<td>").text(snapshotChild.val().name),
+      
       $("<td>").text(snapshotChild.val().role),
+      
       $("<td>").text(snapshotChild.val().startDate),
-      $("<td>").text(snapshotChild.val().monthlyRate),
+      
       // Cuantos meses lleva ativo
-      $("<td>").text("x"),
+      $("<td>").text(yrsWorked),
+
+      $("<td>").text(snapshotChild.val().monthlyRate),
+      
       // Total Billing
       $("<td>").text("y"),
     );
     // Append the new row to the table
     $("#employee-table > tbody").append(newRow);
 
-
-
-    // Change the HTML
-    /* $("#name-display").text(snapshotChild.val().name);
-    $("#email-display").text(snapshotChild.val().email);
-    $("#age-display").text(snapshotChild.val().age);
-    $("#comment-display").text(snapshotChild.val().comment); */
-
+   
     // If any errors are experienced, log them to console.
     }, function(errorObject) {
     console.log("Errors Handled: " + errorObject.code);
