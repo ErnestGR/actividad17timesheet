@@ -45,7 +45,6 @@ $(document).ready(function() {
 // Vamos a hablarle a la BD 
 
 database.ref().on("child_added", function(snapshotChild) {
-
     // Print the initial data to the console.
     console.log(snapshotChild.val());
 
@@ -55,28 +54,36 @@ database.ref().on("child_added", function(snapshotChild) {
     console.log(snapshotChild.val().startDate);
     console.log(snapshotChild.val().monthlyRate);
     
-    // Calculamos los meses que lleva trabajando
-    // var monthsWorked = 0;
-    var yrsWorked = moment(snapshotChild.val().startDate, "MM/DD/YYYY").fromNow();
-    
-    yrsWorked = yrsWorked * 12;
+    //For clarity's sake, we put the values into variables
+    var name = snapshotChild.val().name;
+    var role = snapshotChild.val().role;
+    var monthlyRate = snapshotChild.val().monthlyRate;
 
+    //We get the start date which we saved in the "MM/DD/YYYY" format, an create a momentjs object with it
+    var startDate = moment(snapshotChild.val().startDate, "MM/DD/YYYY");
+    //We get the current date
+    var now = moment();
+    //We can now calculate the difference between now and startDate in "months"
+    var monthsWorked = now.diff(startDate, "months");
+    //With the amount of months worked and the monthly rate, we can calculate the total billing
+    var totalBilling = monthlyRate * monthsWorked;
+    
     // Create the new row
     var newRow = $("<tr>").append(
       
-      $("<td>").text(snapshotChild.val().name),
+      $("<td>").text(name),
       
-      $("<td>").text(snapshotChild.val().role),
+      $("<td>").text(role),
       
-      $("<td>").text(snapshotChild.val().startDate),
+      $("<td>").text(startDate.format("MM/DD/YYYY")),
       
       // Cuantos meses lleva ativo
-      $("<td>").text(yrsWorked),
+      $("<td>").text(monthsWorked),
 
-      $("<td>").text(snapshotChild.val().monthlyRate),
+      $("<td>").text("$" + monthlyRate),
       
       // Total Billing
-      $("<td>").text("y"),
+      $("<td>").text("$" + totalBilling),
     );
     // Append the new row to the table
     $("#employee-table > tbody").append(newRow);
